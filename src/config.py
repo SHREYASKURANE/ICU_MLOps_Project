@@ -8,6 +8,10 @@ TRAIN_DATA_PATH = os.path.join(BASE_DIR, "data", "processed", "train_processed.c
 
 TEST_DATA_PATH = os.path.join(BASE_DIR, "data", "processed", "test_processed.csv")
 
+# Create directories if they don't exist
+os.makedirs(os.path.join(BASE_DIR, "models"), exist_ok=True)
+os.makedirs(os.path.join(BASE_DIR, "data", "processed"), exist_ok=True)
+
 MODEL_PATH = os.path.join(BASE_DIR, "models", "best_model.pkl")
 
 SCALER_PATH = os.path.join(BASE_DIR, "models", "scaler.pkl")
