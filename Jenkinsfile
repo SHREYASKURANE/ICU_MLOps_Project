@@ -1,54 +1,75 @@
 pipeline {
+
     agent any
+
+    environment {
+        PYTHON = "C:\\Users\\ADC\\Desktop\\ICU_MLOps_Project\\venv\\Scripts\\python.exe"
+        PIP = "C:\\Users\\ADC\\Desktop\\ICU_MLOps_Project\\venv\\Scripts\\pip.exe"
+        DOCKER = "C:\\Users\\ADC\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe"
+    }
 
     stages {
 
-        stage('Checkout') {
+        stage('Checkout Source Code') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/SHREYASKURANE/ICU_MLOps_Project.git'
+                checkout scm
             }
         }
 
         stage('Python Version') {
             steps {
-                bat '"C:\\Users\\ADC\\Desktop\\ICU_MLOps_Project\\venv\\Scripts\\python.exe" --version'
+                bat "\"%PYTHON%\" --version"
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat '"C:\\Users\\ADC\\Desktop\\ICU_MLOps_Project\\venv\\Scripts\\pip.exe" install -r requirements.txt'
+                bat "\"%PIP%\" install -r requirements.txt"
             }
         }
 
-        stage('Preprocessing') {
+        stage('Data Preprocessing') {
             steps {
-                bat '"C:\\Users\\ADC\\Desktop\\ICU_MLOps_Project\\venv\\Scripts\\python.exe" src\\preprocess.py'
+                bat "\"%PYTHON%\" src\\preprocess.py"
             }
         }
 
-        stage('Train Model') {
+        stage('Model Training') {
             steps {
-                bat '"C:\\Users\\ADC\\Desktop\\ICU_MLOps_Project\\venv\\Scripts\\python.exe" src\\train.py'
+                bat "\"%PYTHON%\" src\\train.py"
+            }
+        }
+
+        stage('Check Docker') {
+            steps {
+                bat "\"%DOCKER%\" --version"
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t icu-mlops:latest .'
+                bat "\"%DOCKER%\" build -t icu-mlops:latest ."
             }
         }
+
     }
 
     post {
 
         success {
-            echo 'ICU MLOps Pipeline Completed Successfully!'
+            echo "===================================="
+            echo " ICU MLOps Pipeline SUCCESSFUL "
+            echo "===================================="
         }
 
         failure {
-            echo 'Pipeline Failed!'
+            echo "===================================="
+            echo " ICU MLOps Pipeline FAILED "
+            echo "===================================="
+        }
+
+        always {
+            cleanWs()
         }
     }
 }
