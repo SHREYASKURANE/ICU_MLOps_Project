@@ -16,9 +16,6 @@ __pycache__/
 # MLflow
 mlruns/
 
-# Models
-models/*.pkl
-
 # Streamlit
 .streamlit/
 
